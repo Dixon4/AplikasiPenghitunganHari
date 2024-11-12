@@ -32,6 +32,7 @@ public class HitungHariFrame extends javax.swing.JFrame {
         btnHitung = new javax.swing.JButton();
         labelHasil = new javax.swing.JLabel();
         jCalendar1 = new com.toedter.calendar.JCalendar();
+        jCalendar2 = new com.toedter.calendar.JCalendar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new java.awt.GridBagLayout());
@@ -44,7 +45,7 @@ public class HitungHariFrame extends javax.swing.JFrame {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.gridwidth = 6;
         gridBagConstraints.insets = new java.awt.Insets(12, 4, 12, 4);
         jPanel1.add(jLabel1, gridBagConstraints);
 
@@ -75,8 +76,10 @@ public class HitungHariFrame extends javax.swing.JFrame {
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
         jPanel1.add(btnHitung, gridBagConstraints);
@@ -86,14 +89,20 @@ public class HitungHariFrame extends javax.swing.JFrame {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
         jPanel1.add(labelHasil, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridwidth = 3;
         gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
         jPanel1.add(jCalendar1, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridy = 3;
+        jPanel1.add(jCalendar2, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -115,33 +124,37 @@ public class HitungHariFrame extends javax.swing.JFrame {
             int bulan = cbBulan.getSelectedIndex() + 1; // Januari = 1, dst.
             int tahun = (int) spinnerTahun.getValue();
 
-            // Menggunakan tanggal dari JComboBox dan JSpinner
+            // Menggunakan LocalDate untuk menghitung jumlah hari dalam bulan dan tahun yang dipilih
             java.time.LocalDate tanggalDariComboBox = java.time.LocalDate.of(tahun, bulan, 1);
             int jumlahHariDariComboBox = tanggalDariComboBox.lengthOfMonth();
 
-            // Mendapatkan tanggal dari JCalendar (jika dipilih)
-            java.util.Date selectedDate = jCalendar1.getDate();
-            String hasil;
+            // Mendapatkan hari pertama dan terakhir dalam bulan tersebut
+            java.time.LocalDate hariPertama = tanggalDariComboBox.withDayOfMonth(1);
+            java.time.LocalDate hariTerakhir = tanggalDariComboBox.withDayOfMonth(jumlahHariDariComboBox);
 
-            if (selectedDate != null) {
-                // Mengonversi tanggal dari JCalendar ke LocalDate
-                java.time.LocalDate tanggalDariCalendar = selectedDate.toInstant()
-                        .atZone(java.time.ZoneId.systemDefault())
-                        .toLocalDate();
-                
-                int bulanCalendar = tanggalDariCalendar.getMonthValue();
-                int tahunCalendar = tanggalDariCalendar.getYear();
-                int jumlahHariDariCalendar = tanggalDariCalendar.lengthOfMonth();
+            // Mengecek apakah tahun kabisat
+            boolean isKabisat = java.time.Year.of(tahun).isLeap();
 
-                // Menampilkan hasil berdasarkan JCalendar
-                hasil = "Jumlah hari: " + jumlahHariDariCalendar +
-                        "\n, Bulan: " + bulanCalendar +
-                        "\n, Tahun: " + tahunCalendar;
-            } else {
-                // Menampilkan hasil berdasarkan ComboBox dan Spinner
-                hasil = "Jumlah hari: " + jumlahHariDariComboBox +
-                        "\n, Bulan: " + bulan +
-                        "\n, Tahun: " + tahun;
+            // Mengambil tanggal dari JCalendar pertama (jCalendar1) untuk selisih hari
+            java.util.Date selectedDate1 = jCalendar1.getDate();
+            java.util.Date selectedDate2 = jCalendar2.getDate();
+            long selisihHari = 0;
+
+            // Menghitung selisih hari jika kedua tanggal dipilih
+            if (selectedDate1 != null && selectedDate2 != null) {
+                java.time.LocalDate tanggal1 = selectedDate1.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
+                java.time.LocalDate tanggal2 = selectedDate2.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
+                selisihHari = java.time.temporal.ChronoUnit.DAYS.between(tanggal1, tanggal2);
+            }
+
+            // Menampilkan hasil di JLabel
+            String hasil = "Jumlah hari: " + jumlahHariDariComboBox +
+                           "\n, Hari pertama: " + hariPertama.getDayOfWeek() +
+                           "\n, Hari terakhir: " + hariTerakhir.getDayOfWeek() +
+                           "\n, Tahun Kabisat: " + (isKabisat ? "Ya" : "Tidak");
+
+            if (selectedDate1 != null && selectedDate2 != null) {
+                hasil += "\n, Selisih hari antara kedua tanggal: " + Math.abs(selisihHari) + " hari";
             }
 
             labelHasil.setText(hasil);
@@ -204,6 +217,7 @@ public class HitungHariFrame extends javax.swing.JFrame {
     private javax.swing.JButton btnHitung;
     private javax.swing.JComboBox<String> cbBulan;
     private com.toedter.calendar.JCalendar jCalendar1;
+    private com.toedter.calendar.JCalendar jCalendar2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel labelHasil;
