@@ -1,21 +1,19 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+import javax.swing.*;
+import java.time.YearMonth;
 
 /**
  *
  * @author ACER
  */
 public class HitungHariFrame extends javax.swing.JFrame {
-
     /**
      * Creates new form HitungHariFrame
      */
     public HitungHariFrame() {
         initComponents();
     }
+
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -25,22 +23,147 @@ public class HitungHariFrame extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
+
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        cbBulan = new javax.swing.JComboBox<>();
+        spinnerTahun = new javax.swing.JSpinner();
+        btnHitung = new javax.swing.JButton();
+        labelHasil = new javax.swing.JLabel();
+        jCalendar1 = new com.toedter.calendar.JCalendar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        getContentPane().setLayout(new java.awt.GridBagLayout());
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
+        jPanel1.setBackground(new java.awt.Color(255, 102, 51));
+        jPanel1.setLayout(new java.awt.GridBagLayout());
+
+        jLabel1.setFont(new java.awt.Font("Myriad Pro Light", 3, 18)); // NOI18N
+        jLabel1.setText("Aplikasi Penghitungan Hari");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.insets = new java.awt.Insets(12, 4, 12, 4);
+        jPanel1.add(jLabel1, gridBagConstraints);
+
+        cbBulan.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember" }));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
+        jPanel1.add(cbBulan, gridBagConstraints);
+
+        spinnerTahun.setModel(new javax.swing.SpinnerNumberModel(2023, 1900, 2100, 1));
+        spinnerTahun.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                spinnerTahunStateChanged(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
+        jPanel1.add(spinnerTahun, gridBagConstraints);
+
+        btnHitung.setText("Hitung");
+        btnHitung.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHitungActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+        gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
+        jPanel1.add(btnHitung, gridBagConstraints);
+
+        labelHasil.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        labelHasil.setText("hasil...");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
+        jPanel1.add(labelHasil, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
+        jPanel1.add(jCalendar1, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.ipadx = 190;
+        gridBagConstraints.ipady = 12;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(11, 10, 11, 10);
+        getContentPane().add(jPanel1, gridBagConstraints);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    
+    
+    private void btnHitungActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHitungActionPerformed
+    try {
+            // Mendapatkan bulan dan tahun dari JComboBox dan JSpinner
+            int bulan = cbBulan.getSelectedIndex() + 1; // Januari = 1, dst.
+            int tahun = (int) spinnerTahun.getValue();
+
+            // Menggunakan tanggal dari JComboBox dan JSpinner
+            java.time.LocalDate tanggalDariComboBox = java.time.LocalDate.of(tahun, bulan, 1);
+            int jumlahHariDariComboBox = tanggalDariComboBox.lengthOfMonth();
+
+            // Mendapatkan tanggal dari JCalendar (jika dipilih)
+            java.util.Date selectedDate = jCalendar1.getDate();
+            String hasil;
+
+            if (selectedDate != null) {
+                // Mengonversi tanggal dari JCalendar ke LocalDate
+                java.time.LocalDate tanggalDariCalendar = selectedDate.toInstant()
+                        .atZone(java.time.ZoneId.systemDefault())
+                        .toLocalDate();
+                
+                int bulanCalendar = tanggalDariCalendar.getMonthValue();
+                int tahunCalendar = tanggalDariCalendar.getYear();
+                int jumlahHariDariCalendar = tanggalDariCalendar.lengthOfMonth();
+
+                // Menampilkan hasil berdasarkan JCalendar
+                hasil = "Jumlah hari: " + jumlahHariDariCalendar +
+                        "\n, Bulan: " + bulanCalendar +
+                        "\n, Tahun: " + tahunCalendar;
+            } else {
+                // Menampilkan hasil berdasarkan ComboBox dan Spinner
+                hasil = "Jumlah hari: " + jumlahHariDariComboBox +
+                        "\n, Bulan: " + bulan +
+                        "\n, Tahun: " + tahun;
+            }
+
+            labelHasil.setText(hasil);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Input tidak valid.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnHitungActionPerformed
+
+    private void spinnerTahunStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spinnerTahunStateChanged
+      // Mendapatkan tahun yang baru diubah dari JSpinner
+        int tahun = (int) spinnerTahun.getValue();
+
+        // Mendapatkan bulan yang dipilih dari JComboBox
+        int bulan = cbBulan.getSelectedIndex() + 1; // Januari = 1, dst.
+
+        // Menggunakan LocalDate untuk mendapatkan jumlah hari dalam bulan dan tahun yang baru
+        java.time.LocalDate tanggal = java.time.LocalDate.of(tahun, bulan, 1);
+        int jumlahHari = tanggal.lengthOfMonth();
+
+        // Menampilkan hasil jumlah hari di JLabel setiap kali tahun diubah
+        labelHasil.setText("Jumlah hari: " + jumlahHari);
+    }//GEN-LAST:event_spinnerTahunStateChanged
 
     /**
      * @param args the command line arguments
@@ -76,7 +199,14 @@ public class HitungHariFrame extends javax.swing.JFrame {
             }
         });
     }
-
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnHitung;
+    private javax.swing.JComboBox<String> cbBulan;
+    private com.toedter.calendar.JCalendar jCalendar1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel labelHasil;
+    private javax.swing.JSpinner spinnerTahun;
     // End of variables declaration//GEN-END:variables
 }
